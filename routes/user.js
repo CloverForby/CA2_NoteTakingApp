@@ -1,11 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const utils = require('../util');
 
 
 //CODE BY IRFAN + minor fixes by melissa
 
 module.exports = (connection) =>{
-    //middleware function on app.js
+    //MIDDLEWARE REGISTRATION
     const validateRegistration = (req, res, next) => {
         const {username, email, password} = req.body
 
@@ -23,7 +24,15 @@ module.exports = (connection) =>{
 
     //Register page load
     router.get('/register', (req, res) => {
-        res.render('register', { messages: req.flash('error'), formData: req.flash('formData')[0] });
+        if (utils.isLoggedIn){
+            res.redirect('/')
+        } else {
+        res.render('register', { 
+                messages: req.flash('error'), 
+                formData: req.flash('formData')[0],
+                isLoggedIn: utils.isUserLoggedIn(req)
+            });
+        }
     });
 
     //Register post
@@ -42,10 +51,14 @@ module.exports = (connection) =>{
 
     //Login page load
     router.get('/login', (req, res) => {
+        if (utils.isLoggedIn){
+            res.redirect('/')
+        } else {
         res.render('login', {
             messages: req.flash('success'),
-            errors: req.flash('error')
-        });
+            errors: req.flash('error'),
+            isLoggedIn: utils.isUserLoggedIn(req)
+        });}
     });
 
     //login post
@@ -66,7 +79,7 @@ module.exports = (connection) =>{
             if (results.length > 0) {
                 req.session.user = results[0];
                 req.flash('success', 'Login successful!');
-                res.redirect('/dashboard');
+                res.redirect('/');
             } else {
                 req.flash('error', 'Invalid email or password.');
                 res.redirect('/login');
@@ -79,6 +92,7 @@ module.exports = (connection) =>{
         req.session.destroy();
         res.redirect('/');
     });
+
 
     return router;
 }

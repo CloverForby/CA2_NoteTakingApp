@@ -7,6 +7,10 @@ const userRoutes = require('./routes/user');
 const searchRoutes = require('./routes/searchncat');
 const notesRoutes = require('./routes/notes');
 const app = express();
+const utils = require('./util');
+const notes = require('./routes/notes');
+
+
 const connection = mysql.createConnection({
     host:'localhost', //Guys PLs change this to your MySQL host
     user:'root', //Guys PLs change this to your MySQL username
@@ -42,6 +46,8 @@ app.use('/',notesRoutes(connection));
 //SEARCH ROUTES
 app.use('/',searchRoutes(connection));
 
+
+
 //Define routes
 app.get('/',(req,res)=>{
     const sql = 'SELECT * FROM notes';
@@ -52,9 +58,9 @@ app.get('/',(req,res)=>{
             return res.status(500).send('Error Retrieving');
         }
         //Render HTML page with data
-        res.render('index',{notes:results});
+        console.log(results)
+        res.render('index',{notes:results, isLoggedIn: utils.isUserLoggedIn(req)});
     });
-
 });
 
 //Set up view engine
