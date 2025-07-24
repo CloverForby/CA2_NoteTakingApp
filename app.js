@@ -36,11 +36,11 @@ app.set('view engine', 'ejs');
 
 
 //USER ROUTES
-app.use('/',userRoutes);
+app.use('/',userRoutes(connection));
 //NOTES ROUTES
-app.use('/',notesRoutes);
+app.use('/',notesRoutes(connection));
 //SEARCH ROUTES
-app.use('/',searchRoutes);
+app.use('/',searchRoutes(connection));
 
 //Define routes
 app.get('/',(req,res)=>{
