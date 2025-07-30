@@ -12,10 +12,10 @@ const notes = require('./routes/notes');
 
 
 const connection = mysql.createConnection({
-    host:'localhost', //Guys PLs change this to your MySQL host
-    user:'root', //Guys PLs change this to your MySQL username
-    password: 'pass', //Guys PLs change this to your MySQL password
-    database:'note_tabledb'
+    host:'qlciga.h.filess.io', //Guys PLs change this to your MySQL host
+    user:'NoteTakingApp_tripnestit', //Guys PLs change this to your MySQL username
+    password: '543f263e9b0dc79475ac6fa57294581a8f74e568', //Guys PLs change this to your MySQL password
+    database:'NoteTakingApp_tripnestit'
 })
 connection.connect((err) =>{
     if(err){
