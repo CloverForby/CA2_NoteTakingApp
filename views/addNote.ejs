@@ -8,21 +8,7 @@
         <title>Note Taking App</title>
     </head>
 <body>
-    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/">Note Taking App</a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="collapsibleNavbar">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="/addNote">Add new note</a>
-              </li> 
-            </ul>
-          </div>
-        </div>
-    </nav>
+    <%- include('./partials/header'); %>
 
     <div class="container">
         <br>
@@ -30,15 +16,19 @@
         <br>
         <div class="text-center">
             <form action="/addNote" method="POST">
-                <label for="user">Username:</label><br>
-                <input type="text" id="user" name="user" required><br><br>
-
                 <label for="title">Note Title:</label><br>
                 <input type="text" id="title" name="title" required><br><br>
 
-                <label for="date">Date of post:</label><br>
-                <input type="date" id="date" name="date" required><br><br>
-
+                <label for="description">Description:</label><br>
+                <textarea id="description" name="description" rows="4" cols="50">  </textarea> <br>
+                <br>
+                <label for="category">Category:</label><br>
+                <select name="categoryid" id="categoryid">
+                  <% for(let i=0; i < categories.length; i++) { %>
+                    <tr>
+                      <option value="<%= categories[i].categoryId %>"><%= categories[i].label %></option>
+                  <% } %>
+                </select><br><br>
                 <button type="submit" class="btn btn-primary">Add Note</button>
             </form>
         </div>

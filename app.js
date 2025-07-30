@@ -64,7 +64,7 @@ app.get('/',(req,res)=>{
 });
 
 //addnote (shayne)
-app.get('/addNote', (req, res) => {
+/*app.get('/addNote', (req, res) => {
     res.render('addNote', { isLoggedIn: utils.isUserLoggedIn(req) });
 });
 
@@ -80,7 +80,7 @@ app.post('/addNote', (req, res) => {
             res.redirect('/');
         }
     });
-});
+});*/
 
 //Set up view engine
 app.set('view engine','ejs');
