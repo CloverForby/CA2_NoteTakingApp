@@ -82,6 +82,19 @@ app.post('/addNote', (req, res) => {
     });
 });*/
 
+//delete note (levin)
+app.get('/deleteNote/:id',(req,res)=> {
+    const NOTEtId = req.params.id
+    const sql = "DELETE FROM notes WHERE NoteId = ?";
+    connection.query(sql, [NoteId], (error, results) => {
+        if (error) {
+            console.error("Error deleting Note:", error);
+        } else {
+            res.redirect ('/')
+        }
+    })
+})
+
 //Set up view engine
 app.set('view engine','ejs');
 //enable static files
