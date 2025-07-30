@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const utils = require('../util');
-const util = require('../util');
 
 module.exports = (connection) =>{
     //BY LEVIN
@@ -24,27 +23,85 @@ module.exports = (connection) =>{
     router.get('/',(req,res)=>{
         //CHECK IF USER IS LOGGED IN
         if (utils.isUserLoggedIn(req) == false){
-            res.render('index',{notes:[],isLoggedIn: utils.isUserLoggedIn(req)});
+            res.redirect('login');
         } else {
+            var sql = "";
+            var isAdmin = req.session.user.userRole == "admin";
+            if (isAdmin){
+                sql = 'SELECT * FROM notes';
+            } else {
+                sql = 'SELECT * FROM notes WHERE userId = ?';
+            }
             const userId = req.session.user.userId;
-            const sql = 'SELECT * FROM notes WHERE userId = ?';
             //Fetch Data f\From MySQL
             connection.query(sql, userId  ,(error,results)=>{
                 if(error){
                     console.error('Database query error:', error.message);
                     return res.status(500).send('Error Retrieving');
                 }
+                const catsql = 'SELECT * FROM categories';
+                connection.query(catsql, (error,catresults)=>{
+                    res.render('index',{notes:results, categories: catresults, isAdmin : isAdmin, isLoggedIn: utils.isUserLoggedIn(req)});
+                })
                 //Render HTML page with data
-                console.log(results)
-                res.render('index',{notes:results, isLoggedIn: utils.isUserLoggedIn(req)});
             });
         }
         
+    });
+
+    //SEARCH FUNCTION (MELISSA)
+    router.post('/', (req,res)=>{
+        const { categoryId, title } = req.body;
+        console.log(req.body);
+        const isAdmin = utils.isAdmin(req);
+        var sql = "SELECT * FROM notes "
+        var categoryVal = categoryId != 0
+        var titleVal = title != undefined && title.trim() !== '';
+        var isEmpty = !categoryVal && !titleVal
+        const userId = req.session.user.userId;
+
+        var params = [];
+        if (!isEmpty){
+            sql += "WHERE "
+        }
+        if (titleVal){
+            sql += "title LIKE ? "
+            params.push(title)
+        }
+        if (categoryVal){
+            if (titleVal){
+               sql += "AND "
+            }
+            sql += "categoryId = ? "
+            params.push(categoryId)
+        }
+        if (!isAdmin){
+            if (isEmpty){
+                
+                sql += "WHERE userId = ?";
+            } else {
+                sql += "AND userId = ?";
+            }
+            params.push(userId)
+        }
+        console.log(sql);
+        connection.query(sql, params, (error, results) => {
+            if (error) {
+                console.error('Error adding note:', error);
+                return res.status(500).send('Error adding note');
+            } else {
+                const catsql = 'SELECT * FROM categories';
+                connection.query(catsql, (error,catresults)=>{
+                    res.render('index',{notes:results, categories: catresults, isAdmin : isAdmin, isLoggedIn: utils.isUserLoggedIn(req)});
+                })
+            }
+        });
     });
     
     //addnote (shayne)
     router.get('/addNote', (req, res) => {
         if (utils.isUserLoggedIn(req)){
+            const isAdmin = utils.isAdmin(req)
             //GETTING CATEGORIES
             const sql = 'SELECT * FROM categories';
             //Fetch Data f\From MySQL
@@ -54,7 +111,7 @@ module.exports = (connection) =>{
                     return res.status(500).send('Error Retrieving');
                 }
                 //Render HTML page with data
-                res.render('addNote', {categories:results, isLoggedIn: utils.isUserLoggedIn(req) });
+                res.render('addNote', {categories:results, isAdmin:isAdmin, isLoggedIn: utils.isUserLoggedIn(req) });
             });
         } else {
             res.redirect("/");
@@ -79,7 +136,7 @@ module.exports = (connection) =>{
     router.get('/editNote/:id', (req, res) => {
         const noteId = req.params.id;
         const sql = 'SELECT * FROM notes WHERE noteId = ?';
-        
+        const isAdmin = utils.isAdmin(req);
         connection.query(sql, [noteId], (error, results) => {
             if (error) {
                 console.error('Database query error:', error.message);
@@ -97,7 +154,7 @@ module.exports = (connection) =>{
                     if (utils.isUserLoggedIn(req)){
                         //check if user has auth
                         if (results[0].userId == req.session.user.userId ){
-                            res.render('editNote', { note: results[0], categories: catresults,isLoggedIn: utils.isUserLoggedIn(req) }); // sends note data to EJS
+                            res.render('editNote', { note: results[0], isAdmin: isAdmin, categories: catresults,isLoggedIn: utils.isUserLoggedIn(req) }); // sends note data to EJS
                         } else {
                             res.redirect('/');
                         }

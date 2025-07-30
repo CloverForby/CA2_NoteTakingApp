@@ -16,28 +16,31 @@
       <h2>Update Note</h2>
     </div>
     <br>
-    <div class="text-center">
+    <div>
       <% if (note) { %>
         <form action="/editNote/<%= note.noteId %>" method="POST">
           <label for="title">Note Title:</label><br>
-          <input type="text" id="title" name="title" value="<%= note.title %>" required><br><br>
+          <input type="text" class="form-control" id="title" name="title" value="<%= note.title %>" required><br><br>
 
-          <label for="description">Description:</label><br>
-          <textarea id="description" name="description" rows="5" cols="40" required><%= note.description %></textarea><br><br>
-          <label for="category">Category:</label><br>
-          <select name="categoryId" id="categoryId">
+          <label class="mb-2" for="description">Description:</label><br>
+          <textarea class="form-control"  id="description" name="description" rows="4" cols="50" required><%= note.description %></textarea><br><br>
+          <label class="mb-2" for="category">Category:</label><br>
+          <select class="form-select w-25" name="categoryId" id="categoryId">
             <% for(let i=0; i < categories.length; i++) { %>
-              <tr>
                 <option value="<%= categories[i].categoryId %>"><%= categories[i].label %></option>
             <% } %>
           </select><br><br>
-          <button type="submit" class="btn btn-primary">Update Note</button>
+          <div class="d-flex">
+            <button type="submit" class="btn btn-primary mr-3">Update Note</button>
+            <div class="mx-3"></div>
+            <a href="/" class="btn btn-secondary">Back</a>
+          </div>
         </form>
       <% } else { %>
         <p>No note found.</p>
       <% } %>
       <br>
-      <a href="/" class="btn btn-secondary mt-3">Back</a>
+      
     </div>
   </div>
 </body>
