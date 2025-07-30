@@ -40,7 +40,7 @@
             <td><%= notes[i].title %></td>
             <td><%= notes[i].date.toLocaleDateString('en-GB') %></td>
             <td><%= notes[i].categoryId %></td>
-            <td><a href="/deleteNote/<%= notes[i].noteId %>"onclick = "return confirm('Are you sure you want to delete this product?')">Delete</a></td>
+            <td><a href="/deleteNote/<%= notes[i].noteId %>"onclick = "return confirm('Are you sure you want to delete this note?')">Delete</a></td>
           </tr>
         <% } %>
       </tbody>
