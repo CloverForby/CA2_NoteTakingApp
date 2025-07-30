@@ -48,39 +48,7 @@ app.use('/',searchRoutes(connection));
 
 
 
-//Define routes
-app.get('/',(req,res)=>{
-    const sql = 'SELECT * FROM notes';
-    //Fetch Data f\From MySQL
-    connection.query(sql,(error,results)=>{
-        if(error){
-            console.error('Database query error:', error.message);
-            return res.status(500).send('Error Retrieving');
-        }
-        //Render HTML page with data
-        console.log(results)
-        res.render('index',{notes:results, isLoggedIn: utils.isUserLoggedIn(req)});
-    });
-});
 
-//addnote (shayne)
-app.get('/addNote', (req, res) => {
-    res.render('addNote', { isLoggedIn: utils.isUserLoggedIn(req) });
-});
-
-app.post('/addNote', (req, res) => {
-    const { title, content } = req.body;
-    const sql = 'INSERT INTO notes (user, title, date) VALUES (?, ?, ?)';
-
-    connection.query(sql, [req.session.userId, title, new Date()], (error, results) => {
-        if (error) {
-            console.error('Error adding note:', error);
-            return res.status(500).send('Error adding note');
-        } else {
-            res.redirect('/');
-        }
-    });
-});
 
 //Set up view engine
 app.set('view engine','ejs');

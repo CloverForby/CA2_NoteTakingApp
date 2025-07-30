@@ -11,40 +11,55 @@
   <%- include('./partials/header'); %>
   <div class="container">
     <br>
-    <div class="text-center"><h2>Note App</h2></div>
+    <div class="text-center"><h2><% if (isAdmin) {%> All Notes <%} else {%> Your Notes <%}%></h2></div>
     <br>
-    <div class="row">
-      <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-      <div class="col bg-primary">dsfdsf</div>
-      <div class="col bg-primary">dsfdsf</div>
+    <div class="row mt-4">
+      
+      <div class="col-3 mb-4">
+        <div class="container card p-4 h-100">
+          <form action="/" method="POST">
+            <h2>Search</h2>
+            <label for="title" class="my-3">Title:</label><br>
+            <input class="form-control me-2" name="title" id="title" type="search" aria-label="Search"/>
+            <label for="category" class="my-3">Category:</label><br>
+            <select class="form-select" name="categoryId" id="categoryId">
+              <option value="0"></option>
+              <% for(let i=0; i < categories.length; i++) { %>
+                  <option value="<%= categories[i].categoryId %>"><%= categories[i].label %></option>
+              <% } %>
+            </select>
+            <br><br>
+            <button class="btn btn-outline-success" type="submit">Search</button>
+            <a class="btn btn-outline-danger" href="/">Clear</a>
+          </form>
+        </div>
+      </div>
+      <div class="col">
+        <% for(let i=0; i < notes.length; i++) {%>
+          <div class="container card p-4 mb-4">
+            <div class="row">
+              <h3 class="col"><%= notes[i].title %></h3>
+              <p class="col"><%= notes[i].date.toLocaleDateString('en-GB') %></p>
+            </div>
+            <p>
+            <span class="badge badge-light bg-light text-dark">
+            <% for (let j=0; j < categories.length; j++){if (categories[j].categoryId == notes[i].categoryId){ %>
+            <%= categories[j].label %>
+            <% } } %>
+            </span></p>
+            <% if(isAdmin){ %><p>By UserId: <%= notes[i].userId %></p> <% }%>
+            <p><%= notes[i].description %></p>
+            
+            <div class="d-flex">
+              <% if (!isAdmin) {%><div class="mr-4"><a class="btn btn-primary" href="/editNote/<%= notes[i].noteId %>">Edit</a></div> <div class="m-2"></div><% } %>
+              
+              <div><a class="btn btn-danger" href="/deleteNote/<%= notes[i].noteId %>"onclick = "return confirm('Are you sure you want to delete this note?')">Delete</a></div>
+            </div>
+          </div>
+        <% }%>
+      </div>
     </div>
-    <table class="table table-hover small text-center">
-      <thead>
-          <tr>
-            <th width="100">NotesID</th>
-            <th width="50">UserID</th>
-            <th width="50">Title</th>
-            <th width="50">Date</th>
-            <th width="50">Categories</th>
-            <th width="50">Delete</th>
-          </tr>
-      </thead>
-      <tbody>
-        <% for(let i=0; i < notes.length; i++) { %>
-          <tr>
-            <td><%= notes[i].noteId %></td>
-            <td><%= notes[i].userId %></td>
-            <td><%= notes[i].title %></td>
-            <td><%= notes[i].date.toLocaleDateString('en-GB') %></td>
-            <td><%= notes[i].categoryId %></td>
-            <td><a href="/deleteNote/<%= notes[i].noteId %>"onclick = "return confirm('Are you sure you want to delete this product?')">Delete</a></td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
-  </div>
+        
+    </div>
 </body>
 </html>

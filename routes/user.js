@@ -37,9 +37,9 @@ module.exports = (connection) =>{
 
     //Register post
     router.post ('/register', validateRegistration, (req, res) => {
-        const { username, email, password} = req.body;
-        const sql = 'INSERT INTO users (username, email, password) VALUES (?, ?, SHA1(?))';
-        connection.query(sql, [username, email, password], (err, result) => {
+        const { username, email, password, userRole} = req.body;
+        const sql = 'INSERT INTO users (username, email, password, userRole) VALUES (?, ?, SHA1(?), ?)';
+        connection.query(sql, [username, email, password, userRole], (err, result) => {
             if (err) {
                 throw err;
             }

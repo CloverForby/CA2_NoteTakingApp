@@ -52,7 +52,7 @@ CREATE TABLE `notes` (
   `userId` int DEFAULT NULL,
   `date` datetime DEFAULT NULL,
   `categoryId` int DEFAULT NULL,
-  `desc` varchar(200) DEFAULT NULL,
+  `description` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`noteId`),
   KEY `categoryId_idx` (`categoryId`),
   KEY `userId_idx` (`userId`),
